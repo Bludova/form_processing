@@ -15,17 +15,24 @@
   </style>
   </head>
   <body>
+
     <h1>Пройдите тест</h1>
- <?php
+
+<?php
+$nomTest = ($_GET);
+foreach($nomTest as $i) {
+    //echo   $key. "</br>"; 
+}
+
+
 $filelist = glob("*.json");
-$json = file_get_contents(__DIR__ ."./$filelist[0]");
+$json = file_get_contents(__DIR__ ."/$i");
 $data = json_decode($json, true);
 $issues_1 = $data["question_1"];
 $issues_2 = $data["question_2"];
 
-
 ?>
-      <form action=" " method="get">
+      <form action=" " method="post">
         <fieldset name="q1">
           <legend><?= $issues_1["label"]; ?></legend>
           <label><input type="radio" name="q1" value='<?= $issues_1["option_1"];?>' ><?= $issues_1["option_1"]; ?></label>
@@ -44,9 +51,9 @@ $issues_2 = $data["question_2"];
       </form>
 <?php
 
-if(isset($_GET['q1']) && !empty($_GET['q1']))
+if(isset($_POST['q1']) && !empty($_POST['q1']))
 {
- if($_GET['q1'] ==  $issues_1["result"]) 
+ if($_POST['q1'] ==  $issues_1["result"]) 
   {
     echo "На вопрос: " .$issues_1["label"]."  ";
  ?> <span class="correctly"> Вы ответили верно! </span><?php echo "<br>";
@@ -58,9 +65,9 @@ if(isset($_GET['q1']) && !empty($_GET['q1']))
   }
 }
 
-if(isset($_GET['q2']) && !empty($_GET['q2']))
+if(isset($_POST['q2']) && !empty($_POST['q2']))
 {
- if($_GET['q2'] ==  $issues_2["result"]) 
+ if($_POST['q2'] ==  $issues_2["result"]) 
   {
     echo "На вопрос: " .$issues_2["label"]."  ";
    ?><span class="correctly">Вы ответили верно!</span>.<?php echo "<br>";
@@ -72,7 +79,7 @@ if(isset($_GET['q2']) && !empty($_GET['q2']))
 }
 ?>
 <hr>
- <a href="./list.php">Выбрать тест! </a>
- <a href="./admin.php">Загрузить тест! </a>
+ <a href="list.php">Выбрать тест! </a>
+ <a href="admin.php">Загрузить тест! </a>
   </body>
 </html>
