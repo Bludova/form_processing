@@ -10,15 +10,23 @@
 
       <form enctype="multipart/form-data" action="./test.php" method="get">
           <legend>Список загруженных тестов</legend>
-            <?php $number = 0;
+            <?php 
+
+$number = 0;
 $filelist = glob("*.json");
-    foreach ($filelist as $filename){
-   	$number++;?>
+ 
+foreach($filelist as $i => $filename) {
+   $number++;
+    $name = basename($filename);
+
+?>
 
 
           <label><input type="radio" name='<?="$number"?>' value='<?="$filename"?>'>
 
-          <?php echo  "№$number-"." ". $filename. "  $test " ;
+
+        <?= " № $number  " . $filename;?>
+<?php
 }
 ?>
         </label>
@@ -26,9 +34,6 @@ $filelist = glob("*.json");
       </form>
 
 
-<?php
-$files_test = $_FILES['userfile'] ['name'];
-?> 
 
 <?php
 if(isset($_FILES['userfile'] ['name']) && !empty($_FILES['userfile'] ['name']))
