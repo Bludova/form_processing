@@ -7,8 +7,7 @@
   <body>
 <h1>Список загруженных тестов</h1>
 
-
-      <form enctype="multipart/form-data" action="./test.php" method="get">
+      <form enctype="multipart/form-data" action="test.php" method="get">
           <legend>Список загруженных тестов</legend>
             <?php 
 
@@ -24,9 +23,7 @@ foreach($filelist as $i => $filename) {
 
           <label><input type="radio" name='<?="$number"?>' value='<?="$filename"?>'>
 
-
-        <?= " № $number  " . $filename;?>
-<?php
+          <?php echo  "№$number $filename " ;
 }
 ?>
         </label>
@@ -34,24 +31,7 @@ foreach($filelist as $i => $filename) {
       </form>
 
 
-
-<?php
-if(isset($_FILES['userfile'] ['name']) && !empty($_FILES['userfile'] ['name']))
-{
-  if($_FILES['userfile'] ['error'] == UPLOAD_ERR_OK &&
-    move_uploaded_file($_FILES['userfile'] ['tmp_name'], $_FILES['userfile'] ['name']))
-  {
-    echo "Файл с текстом загружен! <br>";
-  }else 
-  {
-    echo " Ошибка: Файл с текстом не загружен! <br>";
-
-  }
-}
-
-?>
-
 <hr>
-<a href="./admin.php">Загрузить тест!</a>
+<a href="admin.php">Загрузить тест!</a>
   </body>
 </html>
