@@ -1,3 +1,20 @@
+<?php
+$nomTest = ($_GET);
+foreach($nomTest as $i) {
+}
+
+$filelist = glob("*.json");
+$json = file_get_contents(__DIR__ ."/$i");
+$data = json_decode($json, true);
+$issues_1 = $data["question_1"];
+$issues_2 = $data["question_2"];
+
+  if (empty($issues_1) and empty($issues_2)) {
+    http_response_code(404);
+    exit();
+   }
+
+?>
 <!DOCTYPE html>
   <html lang="ru">
   <head>
@@ -18,21 +35,7 @@
 
     <h1>Пройдите тест</h1>
 
-<?php
-$nomTest = ($_GET);
-foreach($nomTest as $i) {
-    //echo   $key. "</br>"; 
-}
-
-
-$filelist = glob("*.json");
-$json = file_get_contents(__DIR__ ."/$i");
-$data = json_decode($json, true);
-$issues_1 = $data["question_1"];
-$issues_2 = $data["question_2"];
-
-?>
-      <form action=" " method="post">
+    <form action=" " method="post">
         <fieldset name="q1">
           <legend><?= $issues_1["label"]; ?></legend>
           <label><input type="radio" name="q1" value='<?= $issues_1["option_1"];?>' ><?= $issues_1["option_1"]; ?></label>
