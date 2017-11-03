@@ -15,7 +15,7 @@ $number = 0;
 $filelist = glob("*.json");
  
 foreach($filelist as $i => $filename) {
-   $number++;
+    $number++;
     $name = basename($filename);
 
 ?>
