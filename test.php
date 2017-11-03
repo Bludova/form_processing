@@ -6,14 +6,29 @@ foreach($nomTest as $i) {
 $filelist = glob("*.json");
 $json = file_get_contents(__DIR__ ."/$i");
 $data = json_decode($json, true);
+array_unshift($filelist, "1");
+foreach($filelist as $is => $filename) {
+    $name = basename($filename);
+
+    if (array_key_exists(key($nomTest), $filelist)) {
+    // "Массив содержит элемент key($nomTest).";
+      break;
+    } else {
+        http_response_code(404);
+        echo "файл теста не правильный";
+        exit();
+    }
+}
+if (empty($data["question_1"]) and empty($data["question_2"])) {
+    echo "Файл теста содержит не правильную JSON структуру<br>";
+    ?>
+    <a href="list.php">Выбрать тест! </a>
+    <?php
+    exit();
+}
+
 $issues_1 = $data["question_1"];
 $issues_2 = $data["question_2"];
-
-  if (empty($issues_1) and empty($issues_2)) {
-    http_response_code(404);
-    exit();
-   }
-
 ?>
 <!DOCTYPE html>
   <html lang="ru">
