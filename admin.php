@@ -1,3 +1,6 @@
+<?php 
+$types = array('application/octet-stream');
+ ?>
 <!DOCTYPE html>
   <html lang="ru">
   <head>
@@ -16,6 +19,10 @@
 <?php
 if(isset($_FILES['userfile'] ['name']) && !empty($_FILES['userfile'] ['name']))
 {
+if (!in_array($_FILES['userfile']['type'], $types)){
+     echo 'Недопустимый тип файла. Допустимо загружать только тест формата: *.json';
+}else {
+
   if($_FILES['userfile'] ['error'] == UPLOAD_ERR_OK &&
     move_uploaded_file($_FILES['userfile'] ['tmp_name'], $_FILES['userfile'] ['name']))
   {
@@ -25,6 +32,7 @@ if(isset($_FILES['userfile'] ['name']) && !empty($_FILES['userfile'] ['name']))
     echo " Ошибка: Файл с текстом не загружен! <br>";
 
   }
+}
 }
 
 ?>
