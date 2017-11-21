@@ -1,3 +1,14 @@
+<?php
+$upload ='tests/';
+if (!is_dir($upload)){
+    echo "Не создана папка tests в текущей директории!";
+    exit();
+  }
+$list=scandir($upload);
+array_shift($list);
+array_shift($list);
+
+?>
 <!DOCTYPE html>
   <html lang="ru">
   <head>
@@ -6,32 +17,21 @@
   </head>
   <body>
 <h1>Список загруженных тестов</h1>
+<?php
 
-      <form enctype="multipart/form-data" action="test.php" method="get">
-          <legend>Список загруженных тестов</legend>
-            <?php 
+    ?>
 
-$number = 0;
-$filelist = glob("*.json");
- 
-foreach($filelist as $i => $filename) {
-    $number++;
-    $name = basename($filename);
-
+      <form enctype="multipart/form-data" action="./test.php" method="get">
+             <?php
+              if(isset($list)) {
+                foreach ($list as $filename => $values) { ?>
+                <label><input type="radio" name="test" value='<?=$list[$filename];?>'><?=$list[$filename];?></label>
+          <?php }
+              } else echo 'Тесты не загружены';
 ?>
-
-
-          <label><input type="radio" name='<?="$number"?>' value='<?="$filename"?>'>
-
-          <?php echo  "№$number $filename " ;
-}
-?>
-        </label>
         <input type="submit" value="Пройти тест!">
       </form>
-
-
 <hr>
-<a href="admin.php">Загрузить тест!</a>
+<a href="./admin.php">Загрузить тест!</a>
   </body>
 </html>
