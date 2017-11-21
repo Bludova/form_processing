@@ -1,34 +1,25 @@
 <?php
-$nomTest = ($_GET);
-foreach($nomTest as $i) {
-}
-
-$filelist = glob("*.json");
-$json = file_get_contents(__DIR__ ."/$i");
-$data = json_decode($json, true);
-array_unshift($filelist, "1");
-foreach($filelist as $is => $filename) {
-    $name = basename($filename);
-
-    if (array_key_exists(key($nomTest), $filelist)) {
-    // "Массив содержит элемент key($nomTest).";
-      break;
-    } else {
-        http_response_code(404);
-        echo "файл теста не правильный";
-        exit();
-    }
-}
-if (empty($data["question_1"]) and empty($data["question_2"])) {
-    echo "Файл теста содержит не правильную JSON структуру<br>";
-    ?>
-    <a href="list.php">Выбрать тест! </a>
-    <?php
+$upload ='tests/';
+if (!is_dir($upload)) {
+    echo 'Папки не существует';
     exit();
+  }
+
+
+$filelist = glob($upload."*.json");
+$tests = $_GET['test'];
+$test = $upload.$tests;
+
+$error_check = array_search($test, $filelist);
+if(empty($error_check)){
+echo "Не нашел фийл с тестом";
+   http_response_code(404);
+      exit();
 }
 
-$issues_1 = $data["question_1"];
-$issues_2 = $data["question_2"];
+$json = file_get_contents($upload.$_GET['test']);
+$data = json_decode($json, true);
+
 ?>
 <!DOCTYPE html>
   <html lang="ru">
@@ -39,65 +30,71 @@ $issues_2 = $data["question_2"];
    .error {
     color: red;
     font-size: 120%;
-   } 
+   }
    .correctly {
-    color: #00A72A; 
-    font-size: 120%; 
-   } 
+    color: #00A72A;
+    font-size: 120%;
+   }
   </style>
   </head>
   <body>
-
     <h1>Пройдите тест</h1>
 
-    <form action=" " method="post">
-        <fieldset name="q1">
-          <legend><?= $issues_1["label"]; ?></legend>
-          <label><input type="radio" name="q1" value='<?= $issues_1["option_1"];?>' ><?= $issues_1["option_1"]; ?></label>
-          <label><input type="radio" name="q1" value='<?= $issues_1["option_2"];?>' ><?= $issues_1["option_2"]; ?></label>
-          <label><input type="radio" name="q1" value='<?= $issues_1["option_3"];?>' ><?= $issues_1["option_3"]; ?></label>
-          <label><input type="radio" name="q1" value='<?= $issues_1["option_4"];?>' ><?= $issues_1["option_4"]; ?></label>
-        </fieldset>
-        <fieldset name="q2">
-          <legend><?= $issues_2["label"]; ?></legend>
-          <label><input type="radio" name="q2" value='<?= $issues_2["option_1"];?>' ><?= $issues_2["option_1"]; ?></label>
-          <label><input type="radio" name="q2" value='<?= $issues_2["option_2"];?>' ><?= $issues_2["option_2"]; ?></label>
-          <label><input type="radio" name="q2" value='<?= $issues_2["option_3"];?>' ><?= $issues_2["option_3"]; ?></label>
-          <label><input type="radio" name="q2" value='<?= $issues_2["option_4"];?>' ><?= $issues_2["option_4"]; ?></label>
-        </fieldset>
-        <input type="submit" value="Отправить">
-      </form>
-<?php
+    <form action="" method="POST">
 
-if(isset($_POST['q1']) && !empty($_POST['q1']))
-{
- if($_POST['q1'] ==  $issues_1["result"]) 
-  {
-    echo "На вопрос: " .$issues_1["label"]."  ";
- ?> <span class="correctly"> Вы ответили верно! </span><?php echo "<br>";
-  }else 
-  {
-   echo "На вопрос: " .$issues_1["label"]."  ";
-    ?> <span class="error">Вы ответили неправельно!</span> Правельный ответ:"
-   <?php echo $issues_1["result"]. " <br>" ;
+    <?php
+
+    for ($i=0; $i < count($data); $i++) {
+
+      foreach ($data[$i] as $keys){
+    $correct_int = FILTER_VALIDATE_INT;
+    $correct_answer = filter_var($keys, $correct_int);
+
+    if (!$correct_answer and !is_array($keys)){
+
+
+        ?>
+
+        <legend><?=$keys;?></legend>
+       <?php
+       }
+
+        if(is_array($keys)){
+            foreach ($keys as $key_array =>$answers){
+              ?>
+              <input type="radio" name='<?=$i;?>' value='<?=$key_array; ?>'><?= $answers;?>
+              <?php
+            }
+          }
+          if (array_key_exists('answer', $data[$i])) { ?>
+          <?php
+        }
+      }
+    }
+    ?>
+    <p><input type="submit" name="submit" value='Отправить'></p>
+  </form>
+  <hr>
+  <?php
+  if (isset($_POST)){
+    for ($i=0; $i < count($data); $i++) {
+      $question = $data[$i]['question'];
+
+      if (isset($_POST[$i])) {
+        if ($_POST[$i] == $data[$i]['correct_answer']){
+      ?>
+      <span class="correctly">На вопрос:  <?=$question;?>  Вы ответили верно! </span> <br>
+    <?php
+      } else {
+       ?>
+         <span class="error">Вы ответили неправельно на <?=$question;?> вопрос!</span><br>
+         <?php
+      }
+    }
   }
 }
 
-if(isset($_POST['q2']) && !empty($_POST['q2']))
-{
- if($_POST['q2'] ==  $issues_2["result"]) 
-  {
-    echo "На вопрос: " .$issues_2["label"]."  ";
-   ?><span class="correctly">Вы ответили верно!</span>.<?php echo "<br>";
-  }else 
-  {
-   echo "На вопрос: " .$issues_2["label"]."  ";
-   ?>"<span class="error">Вы ответили неправельно!</span> Правельный ответ:" <?php echo$issues_2["result"]. "<br>" ;
-  }
-}
 ?>
-<hr>
- <a href="list.php">Выбрать тест! </a>
- <a href="admin.php">Загрузить тест! </a>
-  </body>
+<a href="list.php">Выбор тестов</a>
+</body>
 </html>
